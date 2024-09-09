@@ -13,4 +13,4 @@ dotenv.config({ path: path.resolve(__dirname, `./config/env/.env.${env}`) });
 
 app.use(express.json());
 app.use("/api", feedRoutes);
-module.exports = { app };
+module.exports = { app, path, express };

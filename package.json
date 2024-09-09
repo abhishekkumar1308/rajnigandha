@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "NODE_ENV=test dotenv -e ./src/config/env/.env.test jest",
-    "start": "NODE_ENV=development dotenv -e ./src/config/env/.env.dev nodemon src/app.js",
-    "prod": "NODE_ENV=production dotenv -e ./src/config/env/.env.prod nodemon src/app.js"
+    "start": "NODE_ENV=development dotenv -e ./src/config/env/.env.development nodemon src/app.js",
+    "prod": "NODE_ENV=production dotenv -e ./src/config/env/.env.production nodemon src/app.js"
   },
   "author": "Abhishek Kumar",
   "license": "ISC",
