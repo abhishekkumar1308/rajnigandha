@@ -8,7 +8,7 @@ const app = express();
 const path = require("path");
 
 // Load environment variables
-const env = process.env.NODE_ENV || "prod";
+const env = process.env.NODE_ENV || "production";
 dotenv.config({ path: path.resolve(__dirname, `./config/env/.env.${env}`) });
 
 app.use(express.json());
