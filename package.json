@@ -11,6 +11,7 @@
   "author": "Abhishek Kumar",
   "license": "ISC",
   "dependencies": {
+    "basic-auth": "^2.0.1",
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",
     "dotenv-cli": "^7.4.2",

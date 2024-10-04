@@ -1,5 +1,5 @@
 const { app, path, express } = require("./server");
-const authorizeFeedsAccess = require("./authFeedsMiddleware");
+const authorizeFeedsAccess = require("./utils/authFeedsMiddleware");
 app.use(
   "/feeds",
   authorizeFeedsAccess,
