@@ -93,23 +93,6 @@ class FeedService {
   }
 
   static updateOrAddProduct(xmlData, product) {
-    if (
-      !product.id ||
-      product.id.trim() === "" ||
-      !product.title ||
-      product.title.trim() === ""
-    ) {
-      console.warn(
-        "Skipping product due to missing or empty id or title:",
-        product
-      );
-      return xmlData;
-    }
-
-    // Ensure product.availability is a lowercase string
-    if (product.availability) {
-      product.availability = product.availability.toLowerCase();
-    }
     const items = xmlData.rss.channel[0].item || [];
     const existingProductIndex = items.findIndex(
       (item) => item["g:id"][0] === product.id

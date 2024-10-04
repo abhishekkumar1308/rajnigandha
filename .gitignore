@@ -2,3 +2,4 @@
 /feeds/meta_product_feed.xml
 /node_modules
 /coverage
+src/config/env/.env.production

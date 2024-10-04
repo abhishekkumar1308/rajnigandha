@@ -1,16 +1,21 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const feedRoutes = require("./routes/feedRoutes");
-
-dotenv.config();
-
-const app = express();
+const morgan = require("morgan");
+const helmet = require("helmet");
+const cors = require("cors");
 const path = require("path");
 
-// Load environment variables
 const env = process.env.NODE_ENV || "production";
 dotenv.config({ path: path.resolve(__dirname, `./config/env/.env.${env}`) });
 
+const app = express();
+
 app.use(express.json());
+app.use(helmet());
+app.use(cors());
+app.use(morgan('dev'));
+
 app.use("/api", feedRoutes);
-module.exports = { app, path, express };
+
+module.exports = { app,express };

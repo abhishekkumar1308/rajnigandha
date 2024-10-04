@@ -1,0 +1,32 @@
+<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
+  <channel>
+    <title>DS Group</title>
+    <link>https://www.dsgroup.com/</link>
+    <description>Product feed</description>
+    <item>
+      <g:id>DS564</g:id>
+      <g:title>Rajnigandha Pan Masala Rs. 11.00 - Pack of 40</g:title>
+      <g:description>Rajnigandha Pan Masala is a premium Pan Masala offering from 90 years old legacy of DS Group. Perfect blend of precious ingredients and aromatic flavors including Betelnut, Catechu, Lime and Cardamom seeds, Rajnigandha has been the first choice of connoisseurs of Pan Masala. Rajnigandha stands for taste of excellence that salutes the spirit of patrons of Pan Masala, who believe only in the best. Weight : 88g, Pack : Intermediate Carton, Quantity: Pack of 40</g:description>
+      <g:link>https://rajnigandha.com/buy/product_details.php?pid=DS564</g:link>
+      <g:image_link>https://rajnigandha.com/dsg/product_image/RG%202.5g%20Pack.jpg</g:image_link>
+      <g:condition>New</g:condition>
+      <g:price>501 INR</g:price>
+      <g:availability>in stock</g:availability>
+      <g:brand>Rajnigandha</g:brand>
+      <g:google_product_category>4748</g:google_product_category>
+    </item>
+    <item>
+      <g:id>DS553</g:id>
+      <g:title>Rajnigandha ₹350.00 Pack</g:title>
+      <g:description>Rajnigandha Pan Masala is a premium Pan Masala offering from 95 years old legacy of DS Group. Perfect blend of precious ingredients and aromatic flavors including Betelnut, Catechu, Lime and Cardamom seeds, Rajnigandha has been the first choice of connoisseurs of Pan Masala. Rajnigandha stands for taste of excellence that salutes the spirit of patrons of Pan Masala, who believe only in the best.&#xD;
+</g:description>
+      <g:link>https://rajnigandha.com/buy/product_details.php?pid=DS553</g:link>
+      <g:image_link>https://rajnigandha.com/dsg/product_image/1697446752-1.png</g:image_link>
+      <g:condition>New</g:condition>
+      <g:price>700 INR</g:price>
+      <g:availability>in stock</g:availability>
+      <g:brand>Rajnigandha</g:brand>
+      <g:google_product_category>4748</g:google_product_category>
+    </item>
+  </channel>
+</rss>
