@@ -1,5 +1,10 @@
 const { app, path, express } = require("./server");
-app.use("/feeds", express.static(path.join(__dirname, "../feeds")));
+const authorizeFeedsAccess = require("./authFeedsMiddleware");
+app.use(
+  "/feeds",
+  authorizeFeedsAccess,
+  express.static(path.join(__dirname, "../feeds"))
+);
 const PORT = process.env.PORT || 3500;
 
 app.listen(PORT, "0.0.0.0", () => {
