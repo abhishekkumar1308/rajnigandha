@@ -12,18 +12,25 @@ class FeedService {
     const googleFeedPromise = this.updateOrCreateFeed(
       products,
       GOOGLE_FEED_FILE,
-      this.initializeGoogleXML
+      this.initializeGoogleXML,
+      "google"
     );
     const metaFeedPromise = this.updateOrCreateFeed(
       products,
       META_FEED_FILE,
-      this.initializeMetaXML
+      this.initializeMetaXML,
+      "meta"
     );
 
     return Promise.all([googleFeedPromise, metaFeedPromise]);
   }
 
-  static async updateOrCreateFeed(products, filePath, initializeXMLFn) {
+  static async updateOrCreateFeed(
+    products,
+    filePath,
+    initializeXMLFn,
+    feedType
+  ) {
     return new Promise((resolve, reject) => {
       fs.readFile(filePath, "utf8", (err, data) => {
         let xmlData;
@@ -42,7 +49,7 @@ class FeedService {
 
         products.forEach((productData) => {
           const product = new FeedModel(productData);
-          xmlData = this.updateOrAddProduct(xmlData, product);
+          xmlData = this.updateOrAddProduct(xmlData, product, feedType);
         });
 
         const newXml = buildXML(xmlData);
@@ -92,7 +99,7 @@ class FeedService {
     };
   }
 
-  static updateOrAddProduct(xmlData, product) {
+  static updateOrAddProduct(xmlData, product, feedType) {
     if (
       !product.id ||
       product.id.trim() === "" ||
@@ -110,6 +117,19 @@ class FeedService {
     if (product.availability) {
       product.availability = product.availability.toLowerCase();
     }
+    let imageLink = "";
+    if (feedType === "meta") {
+      imageLink = `${
+        process.env.BASE_URL || "https://feeds.rajnigandhas.com"
+      }/ds-m/${product.id.toLowerCase()}.png`;
+    } else if (feedType === "google") {
+      imageLink = `${
+        process.env.BASE_URL || "https://feeds.rajnigandhas.com"
+      }/ds-g/${product.id.toLowerCase()}.png`;
+    } else {
+      imageLink = product.image_link;
+    }
+    product.image_link = imageLink;
     const items = xmlData.rss.channel[0].item || [];
     const existingProductIndex = items.findIndex(
       (item) => item["g:id"][0] === product.id
