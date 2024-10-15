@@ -169,8 +169,8 @@ class FeedService {
     }
     product.image_link = imageLink;
 
-    const items = xmlData.rss.channel[0].item || [];
-    const existingProductIndex = items.findIndex(
+    const items = xmlData?.rss?.channel?.[0]?.item || [];
+    const existingProductIndex = items?.findIndex(
       (item) => item["g:id"][0] === product.id
     );
 
