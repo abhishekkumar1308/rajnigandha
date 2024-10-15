@@ -12,45 +12,90 @@ class FeedService {
     const googleFeedPromise = this.updateOrCreateFeed(
       products,
       GOOGLE_FEED_FILE,
-      this.initializeGoogleXML
+      this.initializeGoogleXML,
+      "google"
     );
     const metaFeedPromise = this.updateOrCreateFeed(
       products,
       META_FEED_FILE,
-      this.initializeMetaXML
+      this.initializeMetaXML,
+      "meta"
     );
 
     return Promise.all([googleFeedPromise, metaFeedPromise]);
   }
 
-  static async updateOrCreateFeed(products, filePath, initializeXMLFn) {
+  static async updateOrCreateFeed(
+    products,
+    filePath,
+    initializeXMLFn,
+    feedType
+  ) {
     return new Promise((resolve, reject) => {
       fs.readFile(filePath, "utf8", (err, data) => {
-        let xmlData;
-
         if (err && err.code === "ENOENT") {
-          xmlData = initializeXMLFn();
+          // File does not exist, initialize XML data
+          const xmlData = initializeXMLFn();
+          this.updateAndWriteXML(
+            xmlData,
+            products,
+            filePath,
+            feedType,
+            resolve,
+            reject
+          );
         } else if (err) {
-          return reject(new Error("Failed to read the XML file"));
+          reject(new Error("Failed to read the XML file"));
         } else {
           xml2js.parseString(data, (parseErr, result) => {
-            if (parseErr)
-              return reject(new Error("Failed to parse the XML file"));
-            xmlData = result;
+            if (parseErr) {
+              console.error("XML parsing error, initializing new structure.");
+              const xmlData = initializeXMLFn(); // Initialize to default if parsing fails
+              this.updateAndWriteXML(
+                xmlData,
+                products,
+                filePath,
+                feedType,
+                resolve,
+                reject
+              );
+            } else {
+              const xmlData = result || initializeXMLFn(); // Protect against null result
+              this.updateAndWriteXML(
+                xmlData,
+                products,
+                filePath,
+                feedType,
+                resolve,
+                reject
+              );
+            }
           });
         }
-
-        products.forEach((productData) => {
-          const product = new FeedModel(productData);
-          xmlData = this.updateOrAddProduct(xmlData, product);
-        });
-
-        const newXml = buildXML(xmlData);
-        fs.writeFile(filePath, newXml, (writeErr) => {
-          if (writeErr) return reject(new Error("Failed to save the XML file"));
-          resolve("Feed updated successfully");
-        });
       });
+    });
+  }
+
+  static updateAndWriteXML(
+    xmlData,
+    products,
+    filePath,
+    feedType,
+    resolve,
+    reject
+  ) {
+    products.forEach((productData) => {
+      const product = new FeedModel(productData);
+      xmlData = this.updateOrAddProduct(xmlData, product, feedType);
+    });
+
+    const newXml = buildXML(xmlData);
+    fs.writeFile(filePath, newXml, (writeErr) => {
+      if (writeErr) {
+        reject(new Error("Failed to save the XML file"));
+      } else {
+        resolve("Feed updated successfully");
+      }
     });
   }
 
@@ -63,9 +108,9 @@ class FeedService {
         },
         channel: [
           {
-            title: "DS Group",
-            link: "https://www.dsgroup.com/",
-            description: "Product feed",
+            title: "Google Product Feed",
+            link: "https://www.example.com/",
+            description: "Product feed for Google Shopping",
             item: [],
           },
         ],
@@ -82,9 +127,9 @@ class FeedService {
         },
         channel: [
           {
-            title: "DS Group",
-            link: "https://www.dsgroup.com/",
-            description: "Product feed",
+            title: "Meta Product Feed",
+            link: "https://www.example.com/",
+            description: "Product feed for Meta Platforms",
             item: [],
           },
         ],
@@ -92,7 +137,7 @@ class FeedService {
     };
   }
 
-  static updateOrAddProduct(xmlData, product) {
+  static updateOrAddProduct(xmlData, product, feedType) {
     if (
       !product.id ||
       product.id.trim() === "" ||
@@ -110,8 +155,22 @@ class FeedService {
     if (product.availability) {
       product.availability = product.availability.toLowerCase();
     }
-    const items = xmlData.rss.channel[0].item || [];
-    const existingProductIndex = items.findIndex(
+    let imageLink = "";
+    if (feedType === "meta") {
+      imageLink = `${
+        process.env.BASE_URL || "https://feeds.rajnigandhas.com"
+      }/ds-m/${product.id.toLowerCase()}.png`;
+    } else if (feedType === "google") {
+      imageLink = `${
+        process.env.BASE_URL || "https://feeds.rajnigandhas.com"
+      }/ds-g/${product.id.toLowerCase()}.png`;
+    } else {
+      imageLink = product.image_link;
+    }
+    product.image_link = imageLink;
+
+    const items = xmlData?.rss?.channel?.[0]?.item || [];
+    const existingProductIndex = items?.findIndex(
       (item) => item["g:id"][0] === product.id
     );
 

@@ -1,31 +1,19 @@
-// authFeedsMiddleware.js
+// utils/authFeedsMiddleware.js
+const auth = require("basic-auth");
+// Credentials for authentication
+const USERNAME = process.env.FEED_USERNAME || "your-username";
+const PASSWORD = process.env.FEED_PASSWORD || "your-password";
 
+// Middleware function for basic authentication
 function authorizeFeedsAccess(req, res, next) {
-  // Extract the referer and user-agent headers
-  const referer = req.get("referer") || "";
-  const userAgent = req.get("user-agent") || "";
-
-  // Define allowed sources: referer domains and user agents
-  const allowedReferers = ["google.com", "facebook.com", "fb.com"];
-  const allowedUserAgents = ["Googlebot", "facebookexternalhit"];
-
-  // Check if the referer header is from an allowed domain
-  let isAllowed = allowedReferers.some((domain) => referer.includes(domain));
-
-  // Check if the user-agent header matches an allowed bot/crawler
-  if (!isAllowed) {
-    isAllowed = allowedUserAgents.some((agent) => userAgent.includes(agent));
+  const user = auth(req);
+  // Check if username and password are correct
+  if (!(user && user.name === USERNAME && user.pass === PASSWORD)) {
+    return res
+      .status(401)
+      .json({ message: "Unauthorized: Invalid access token" });
   }
-
-  // If the request matches one of the allowed sources, allow access
-  if (isAllowed) {
-    next();
-  } else {
-    // Otherwise, deny access
-    res
-      .status(403)
-      .send("Forbidden: You are not authorized to access this resource.");
-  }
+  next(); // Proceed to the next middleware or route handler if authentication succeeds
 }
 
 module.exports = authorizeFeedsAccess;
